@@ -49,13 +49,14 @@ function getDefaultModules() {
       //   loader:'json-loader'
       // },
       {
-        test: /\.(png|jpg|gif|woff|woff2)$/,
+        test: /\.(png|jpg|gif|woff|woff2|eot|ttf|svg)$/,
         loader: 'url-loader?limit=8192'//返回一个文件的url地址
       },
       {
         test: /\.(mp4|ogg|svg)$/,
         loader: 'file-loader'
       }
+
     ]
   };
 }

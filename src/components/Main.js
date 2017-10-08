@@ -50,7 +50,7 @@ class ImgFigure extends React.Component {
   render() {
     var styleObj = {};
     //如果props属性中指定了这张图片的位置,则使用
-    if (this.props.arrange.pos) {
+    if (this.props.arrange.pos) {//相当于imgsArrangeArr中的pos
       styleObj = this.props.arrange.pos;
     }
 
@@ -61,7 +61,7 @@ class ImgFigure extends React.Component {
       })
     }
     if (this.props.arrange.isCenter) {
-      styleObj.zIndex = 11;
+      styleObj.zIndex = 11;//使中心图片不被覆盖
     }
 
     let imgFigureClassName = 'img-figure';
@@ -74,7 +74,7 @@ class ImgFigure extends React.Component {
           <h2 className="img-title">{this.props.data.title}</h2>
           <div className="img-back" onClick={this.handleClick}>
             <p>
-              {this.props.data.title}
+              {this.props.data.desc}
             </p>
           </div>
         </figcaption>
@@ -139,8 +139,8 @@ class GalleryByReactApp extends React.Component {
       }
     };
 
-    this.state = {
-      imgsArrangeArr: [
+    this.state = {//存储所有图片的状态，类似于getInitialState
+      imgsArrangeArr: [//定义了imgsArrangArr
         //{
         //  pos:{
         //    left:'0',
@@ -154,19 +154,19 @@ class GalleryByReactApp extends React.Component {
     };
   }
 
-  //翻转图片的函数
+  //翻转图片的函数--闭包函数--读取其他函数内部变量的函数
   inverse(index) {
     return () => {
       let imgsArrangArr = this.state.imgsArrangeArr;
       imgsArrangArr[index].isInverse = !imgsArrangArr[index].isInverse;
-      this.setState({
+      this.setState({//重新渲染
         imgsArrangeArr: imgsArrangArr
       })
     }
   }
 
   //重新布局所有图片
-  rearrange(centerIndex) {
+  rearrange(centerIndex) {//生成随意布置的值
     let imgsArrangeArr = this.state.imgsArrangeArr,
       Constant = this.Constant,
       centerPos = Constant.centerPos,
@@ -178,7 +178,7 @@ class GalleryByReactApp extends React.Component {
       vPosRangeTopY = vPosRange.topY,
       vPosRangeX = vPosRange.x,
       imgsArrangTopArr = [],
-      topImgNum = Math.floor(Math.random() * 2), //取一个或者不取
+      topImgNum = Math.floor(Math.random() * 2), //上侧图片取一个或者不取
       topImgSpiceIndex = 0,
       imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex, 1);
     //首先居中centerIndex图片 ,centerIndex图片不需要旋转
@@ -213,7 +213,7 @@ class GalleryByReactApp extends React.Component {
       } else {
         hPosRangeLORX = hPosRangeRightSecX
       }
-      imgsArrangeArr[i] = {
+      imgsArrangeArr[i] = {//设置imgsArrangeArr的值，这是已经剔除了上中图片的数组
         pos: {
           top: getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
           left: getRangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
@@ -222,11 +222,12 @@ class GalleryByReactApp extends React.Component {
         isCenter: false
       };
     }
-    if (imgsArrangTopArr && imgsArrangTopArr[0]) {
+
+    if (imgsArrangTopArr && imgsArrangTopArr[0]) {//imgsArrangTopArr有值，且取一个填充上侧区域
       imgsArrangeArr.splice(topImgSpiceIndex, 0, imgsArrangTopArr[0]);
     }
     imgsArrangeArr.splice(centerIndex, 0, imgsArrangeCenterArr[0]);
-    this.setState({
+    this.setState({//触发component的重新渲染
       imgsArrangeArr: imgsArrangeArr
     });
   }
@@ -234,7 +235,7 @@ class GalleryByReactApp extends React.Component {
    *居中对应index的图片
    *
    */
-  center(index) {
+  center(index) {//闭包函数
     return () => {
       this.rearrange(index);
     }
@@ -282,7 +283,7 @@ class GalleryByReactApp extends React.Component {
   render() {
     var controllerUnits = [],
       imgFigures = [];
-    imageDatas.forEach((value, index) => {
+    imageDatas.forEach((value, index) => {//初始化，与imgsArrangeArr对应起来
       if (!this.state.imgsArrangeArr[index]) {
         this.state.imgsArrangeArr[index] = {
           pos: {
@@ -294,7 +295,7 @@ class GalleryByReactApp extends React.Component {
           isCenter: false
         }
       }
-      imgFigures.push(<ImgFigure data={value} key={index} ref={'imgFigure'+index}
+      imgFigures.push(<ImgFigure data={value} key={index} ref={'imgFigure'+index}//组合整个图片组件，arrange使用了前面随意生成的位置状态信息
                                  arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)}
                                  center={this.center(index)}/>);
       controllerUnits.push(<ControllerUnit key={index} arrange={this.state.imgsArrangeArr[index]}
